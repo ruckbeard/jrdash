@@ -1,0 +1,14 @@
+.wrapper {
+	width: 960px;
+	margin: 0 auto;
+}
+
+#dashboard-main {
+    background-color: #F2F2F2;
+    min-height: 500px;
+}
+
+#dashboard-side {
+    background-color: #F2F2F2;
+    min-height: 500px;
+}
