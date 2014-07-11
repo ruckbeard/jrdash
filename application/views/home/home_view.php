@@ -1,6 +1,6 @@
 <div class="row">
     <div class=".col-md-6">
-        <form id="login_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('user/login') ?>">
+        <form id="login_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('api/login') ?>">
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
@@ -40,7 +40,7 @@
             var postData = $(this).serialize();
 
             $.post(url, postData, function(o) {
-                if (o.result == 1) {
+                if (o.result === 1) {
                     window.location.href = '<?= site_url('dashboard') ?>';
                 } else {
                     alert('bad login');
