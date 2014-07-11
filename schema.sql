@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `todo` (
 -- Dumping structure for table jrdash.user
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(50) NOT NULL,
+  `uname` varchar(50) NOT NULL,
   `password` varchar(64) NOT NULL,
   `email` varchar(64) NOT NULL,
   `date_added` datetime NOT NULL,
