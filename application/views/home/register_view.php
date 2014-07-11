@@ -1,7 +1,7 @@
 <div class="row">
     <div class=".col-md-6">
         <div id="register_form_error" class="alert alert-danger" role="alert"></div>
-        <form id="register_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('user/register') ?>">
+        <form id="register_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('api/register') ?>">
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
