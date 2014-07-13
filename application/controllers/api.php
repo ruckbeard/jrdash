@@ -1,18 +1,16 @@
 <?php
 
 class Api extends CI_Controller {
-    
+
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public function __construct() {
         parent::__construct();
-
     }
-    
+
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    private function _require_login()
-    {
+
+    private function _require_login() {
         if ($this->session->userdata('user_id') == false) {
             $this->output->set_output(json_encode(['result' => 0, 'error' => 'You are not authorized']));
             return false;
@@ -85,51 +83,125 @@ class Api extends CI_Controller {
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    public function create_todo()
-    {
+
+    public function get_todo($id = null) {
         $this->_require_login();
-        
+
+        if ($id != null) {
+            $this->db->where([
+                'todo_id' => $id,
+                'user_id' => $this->session->userdata('user_id')
+            ]);
+        } else {
+            $this->db->where('user_id', $this->session->userdata('user_id'));
+        }
+        $query = $this->db->get('todo');
+        $result = $query->result();
+
+        $this->output->set_output(json_encode($result));
     }
-    
+
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    public function update_todo()
-    {
+
+    public function create_todo() {
+        $this->_require_login();
+
+        $this->form_validation->set_rules('content', 'Content', 'required|max_length[255]');
+        if ($this->form_validation->run() == false) {
+            $this->output->set_output(json_encode([
+                'result' => 0,
+                'error' => $this->form_validation->error_array()
+            ]));
+            return false;
+        }
+
+        $result = $this->db->insert('todo', [
+            'content' => $this->input->post('content'),
+            'user_id' => $this->session->userdata('user_id')
+        ]);
+
+        if ($result) {
+            //get the freshest entry for the DOM
+            $query = $this->db->get_where('todo', ['todo_id' => $this->db->insert_id()]);
+            $this->output->set_output(json_encode([
+                'result' => 1,
+                'data' => $query->result()
+            ]));
+            return false;
+        }
+
+        $this->output->set_output(json_encode([
+            'result' => 0,
+            'error' => 'Could not insert record'
+        ]));
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function update_todo() {
         $this->_require_login();
         $todo_id = $this->input->post('todo_id');
-    }
+        $completed = $this->input->post('completed');
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+        $this->db->where(['todo_id' => $todo_id]);
+        $this->db->update('todo', [
+            'completed' => $completed
+        ]);
 
-    public function delete_todo()
-    {
-        $this->_require_login();
-        $todo_id = $this->input->post('todo_id');        
-    }
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    public function create_note()
-    {
-        $this->_require_login();
+        $result = $this->db->affected_rows();
+        if ($result) {
+            $this->output->set_output(json_encode(['result' => 1]));
+            return false;
+        }
         
+        $this->output->set_output(json_encode(['result' => 0]));
+        return false;
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    public function update_note()
-    {
+    public function delete_todo() {
         $this->_require_login();
-        $note_id = $this->input->post('note_id');        
+
+        $result = $this->db->delete('todo', [
+            'todo_id' => $todo_id = $this->input->post('todo_id'),
+            'user_id' => $this->session->userdata('user_id')
+        ]);
+
+        if ($this->db->affected_rows() > 0) {
+            $this->output->set_output(json_encode(['result' => 1]));
+            return false;
+        }
+        $this->output->set_output(json_encode([
+            'result' => 0,
+            'message' => 'Could not delete.'
+        ]));
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    public function delete_note()
-    {
+    public function get_note() {
         $this->_require_login();
-        $note_id = $this->input->post('note_id');                
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function create_note() {
+        $this->_require_login();
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function update_note() {
+        $this->_require_login();
+        $note_id = $this->input->post('note_id');
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    public function delete_note() {
+        $this->_require_login();
+        $note_id = $this->input->post('note_id');
     }
 
 }
