@@ -1,14 +1,30 @@
 .wrapper {
-	width: 960px;
-	margin: 0 auto;
+    width: 960px;
+    margin: 0 auto;
 }
 
 #dashboard-main {
-    background-color: #F2F2F2;
     min-height: 500px;
+    background-color: #f2f2f2;
+    border-top: 1px #444 solid;
+    border-right: 1px #444 solid;
+    border-bottom: 1px #444 solid;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 #dashboard-side {
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     min-height: 500px;
+    border: 1px #444 solid;
+}
+
+.hide {
+    display: none;
+}
+
+.todo_completed {
+    color: #b3b3b3;
 }
