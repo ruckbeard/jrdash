@@ -5,8 +5,6 @@
         <link rel="stylesheet" href="<?= base_url() ?>public/css/bootstrap.min.css" />
         <link rel="stylesheet" href="<?= base_url() ?>public/css/style.css" />
 
-        <script src="<?= base_url() ?>public/js/jquery.js"></script>
-        <script src="<?= base_url() ?>public/js/bootstrap.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-inverse" role="navigation">
@@ -31,3 +29,6 @@
         </nav>
 
         <div class="wrapper">
+            
+            <div id="error" class="alert alert-danger hide"> </div>
+            <div id="success" class="alert alert-success hide"> </div>
