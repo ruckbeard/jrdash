@@ -50,23 +50,24 @@ var Event = function() {
             e.preventDefault();
 
             var self = $(this);
-            var url = $(this).attr('href');
-            var completed = $(this).attr('data-completed');
+            var url = self.attr('href');
+            var todo_id = self.attr('data-id');
+            var completed = self.attr('data-completed');
             var postData = {
-                todo_id: $(this).attr('data-id'),
-                completed: completed
+                'todo_id': todo_id,
+                'completed': completed
             };
 
             $.post(url, postData, function(o) {
                 if (o.result === 1) {
                     result.success('Saved');
                     if (completed == 1) {
-                        self.parent().addClass('todo_completed');
+                        $("#todo_" + todo_id).addClass('todo_completed');
                         self.removeClass('glyphicon-unchecked');
                         self.addClass('glyphicon-check');
                         self.attr('data-completed', 0);
                     } else {
-                        self.parent().removeClass('todo_completed');
+                        $("#todo_" + todo_id).removeClass('todo_completed');
                         self.removeClass('glyphicon-check');
                         self.addClass('glyphicon-unchecked');
                         self.attr('data-completed', 1);
@@ -91,17 +92,18 @@ var Event = function() {
         $("body").on("click", ".todo_delete", function(e) {
             e.preventDefault();
 
-            var self = $(this).parent('div');
+            var self = $(this);
+            var todo_id = self.attr('data-id');
             var url = $(this).attr('href');
             var postData = {
-                'todo_id': $(this).attr('data-id')
+                'todo_id': todo_id
             };
 
             $.post(url, postData, function(o) {
                 if (o.result === 1)
                 {
                     result.success('Item Deleted.');
-                    self.remove();
+                    $("#todo_" + todo_id).remove();
                 } else {
                     result.error(o.msg);
                 }

@@ -10,16 +10,16 @@ var Template = function() {
     this.todo = function(obj) {
         var output = '';
         if (obj.completed == 1) {
-            output += '<div class="todo_completed" id="todo_' + obj.todo_id + '">';
-            output += '<span class="todo_text">' + obj.content + '</span>';
-            output += '<a data-id="' + obj.todo_id + '" data-completed="0" class="glyphicon glyphicon-check btn btn-default todo_update" href="api/update_todo"></a>';
+            output += '<tr class="todo_completed" id="todo_' + obj.todo_id + '">';
+            output += '<td class="todo_text">' + obj.content + '</td>';
+            output += '<td><a data-id="' + obj.todo_id + '" data-completed="0" class="glyphicon glyphicon-check btn btn-default btn-xs todo_update" href="api/update_todo"></a></td>';
         } else {
-            output += '<div id="todo_' + obj.todo_id + '">';
-            output += '<span>' + obj.content + '</span>';
-            output += '<a data-id="' + obj.todo_id + '" data-completed="1" class="glyphicon glyphicon-unchecked btn btn-default todo_update" href="api/update_todo"></a>';
+            output += '<tr id="todo_' + obj.todo_id + '">';
+            output += '<td class="todo_text">' + obj.content + '</td>';
+            output += '<td><a data-id="' + obj.todo_id + '" data-completed="1" class="glyphicon glyphicon-unchecked btn btn-default btn-xs todo_update" href="api/update_todo"></a></td>';
         }
-        output += '<a data-id="' + obj.todo_id + '" class="glyphicon glyphicon-remove btn btn-default todo_delete" href="api/delete_todo/"></a>';
-        output += '</div>';
+        output += '<td><a data-id="' + obj.todo_id + '" class="glyphicon glyphicon-remove btn btn-default btn-xs todo_delete" href="api/delete_todo/"></a></td>';
+        output += '</tr>';
         return output;
     };
 

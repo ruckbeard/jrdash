@@ -1,6 +1,6 @@
 </div><!--end wrapper-->
 
-<footer>
+<footer class="clearfix">
     &copy; <?= date('Y') ?>
 </footer>
 
