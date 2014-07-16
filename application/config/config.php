@@ -4,6 +4,23 @@
 |--------------------------------------------------------------------------
 | Base Site URL
 |--------------------------------------------------------------------------
+| Custom autoloader
+|
+ */
+
+function __autoload($class)
+{
+    $class = strtolower($class);
+    if ($class == 'crud_model')
+    {
+        require APPPATH . 'models/' . $class . EXT;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Base Site URL
+|--------------------------------------------------------------------------
 |
 | URL to your CodeIgniter root. Typically this will be your base URL,
 | WITH a trailing slash:
