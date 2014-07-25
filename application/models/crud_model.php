@@ -61,10 +61,41 @@ class CRUD_model extends CI_Model {
      * 
      */
 
-    public function update($data, $user_id) {
-        $this->db->where(['user_id' => $user_id]);
-        $this->db->update('user', $data);
+    public function update($new_data, $where) {
+        if (is_numeric($where)) {
+            $this->db->where($this->_primary_key, $where);
+        } elseif (is_array($where)) {
+            foreach ($where as $_key => $_value) {
+                $this->db->where($_key, $_value);
+            }
+        } else {
+            die("You must pass a second parameter to the update method");
+        }
+
+
+        $this->db->update($this->_table, $new_data);
         return $this->db->affected_rows();
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * @usage insertUpdate(['name' => 'ted'], 12)
+     */
+    public function insertUpdate($data, $id = false) {
+        if (!$id) {
+            die("You must pass a second parameter to the insertUpdate() method");
+        }
+        $this->db->select($this->_primary_key);
+        $this->db->where($this->_primary_key, $id);
+        $q = $this->db->get($this->_table);
+        $result = $q->num_rows();
+
+        if ($result == 0) {
+            return $this->insert($data);
+        }
+        
+        return $this->udpate($data, $id);
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -76,8 +107,17 @@ class CRUD_model extends CI_Model {
      * @usage $result = $this->user_model->delete(6);
      */
 
-    public function delete($user_id) {
-        $this->db->delete('user', ['user_id' => $user_id]);
+    public function delete($id) {
+        if (is_numeric($id)) {
+            $this->db->where($this->_primary_key, $id);
+        } elseif (is_array($id)) {
+            foreach ($id as $_key => $_value) {
+                $this->db->where($_key, $_value);
+            }
+        } else {
+            die("You must pass a parameter to the DELETE() method.");
+        }
+        $this->db->delete($this->_table);
         return $this->db->affected_rows();
     }
 
