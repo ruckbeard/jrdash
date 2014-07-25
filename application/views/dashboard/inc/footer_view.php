@@ -1,8 +1,10 @@
 </div><!--end wrapper-->
 
-<footer class="clearfix">
-    &copy; <?= date('Y') ?>
-</footer>
+<div id="footer">
+    <div class="container">
+        &copy; <?= date('Y') ?>
+    </div>
+</div>
 
 <script src="<?= base_url() ?>public/js/jquery.js"></script>
 <script src="<?= base_url() ?>public/js/bootstrap.js"></script>
@@ -13,7 +15,14 @@
 <script>
     //Init the Dashboard Application
     var dashboard = new Dashboard();
-
+    $(function() {
+        $('body').popover({
+            selector: '[data-toggle="popover"]',
+            trigger: 'focus',
+            html: true, 
+            placement: 'top'
+        });
+    });
 </script>
 </body>
 </html>

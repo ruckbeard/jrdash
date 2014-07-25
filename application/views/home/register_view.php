@@ -2,6 +2,12 @@
     <div class=".col-md-6">
         <div id="register_form_error" class="alert alert-danger" role="alert"></div>
         <form id="register_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('api/register') ?>">
+            <div class="col-lg-2 text-right">
+                
+            </div>
+            <div id="register_spacer" class="col-lg-10">
+                <h3>Register</h3>
+            </div>
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
@@ -29,11 +35,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-default">Register</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <a class="btn btn-default" href="<?=site_url('/')?>" role="button">Back</a>
+                    <a class="btn btn-default" href="<?= site_url('/') ?>" role="button">Back</a>
                 </div>
             </div>
         </form>  
@@ -43,7 +45,7 @@
 <script type="text/javascript">
     $(function() {
         $('#register_form_error').hide();
-        
+
         $('#register_form').submit(function(event) {
             event.preventDefault();
             var url = $(this).attr('action');
@@ -55,7 +57,7 @@
                 } else {
                     $("#register_form_error").show();
                     var output = '<ul>';
-                    for (var key in o.error) 
+                    for (var key in o.error)
                     {
                         var value = o.error[key];
                         output += '<li>' + value + '</li>';

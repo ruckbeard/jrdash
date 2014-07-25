@@ -1,14 +1,34 @@
-.wrapper {
-    width: 85%;
+html,
+body {
+  height: 100%;
+}
+
+.container {
+    width: 75%;
     margin: 0 auto;
 }
 
-#dashboard-main {
-
+#header {
+    background: #f2f2f2;
+    margin-bottom: 50px;
 }
 
-#dashboard-side {
+#wrap {
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto -60px;
+  padding: 0 0 60px;
+}
 
+#footer {
+    height: 60px;
+    background: #f2f2f2;
+    text-align: right;
+    color: #b3b3b3;
+}
+
+#login_spacer #register_spacer {
+    height: 75px;
 }
 
 .hide {
@@ -19,20 +39,64 @@
     color: #b3b3b3;
 }
 
+#success {
+    display: none;
+}
+
+#error {
+    display: none;
+}
+
 .todo_text {
     overflow-wrap:break-word !important;
     word-break:break-all;
     word-wrap: break-word;
 }
 
+#create_todo {
+    margin-bottom: 20px;
+}
+
+.table_buttons {
+    width: 30px;
+    text-align: center;
+}
+
+.note_title {
+    display: block;
+}
+
+.note_content {
+    display: block;
+    display: none;
+}
+
+.note_text_content {
+    resize: vertical;
+}
+
+#create_note {
+    margin-bottom: 20px;
+}
+
+.ajax_loader {
+    background: url(../img/ajax-loader.gif);
+    width: 218px;
+    height: 149px;
+}
+
+.ajax_loader-gray {
+
+}
+
 // Mixin itself
 .clearfix {
-  &:before,
-  &:after {
-    content: " ";
-    display: table;
-  }
-  &:after {
-    clear: both;
-  }
+    &:before,
+        &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
 }

@@ -1,6 +1,13 @@
 <div class="row">
     <div class=".col-md-6">
+        <div id="login_form_error" class="alert alert-danger" role="alert"></div>
         <form id="login_form" class="form-horizontal" role="form" metho="post" action="<?= site_url('api/login') ?>">
+            <div class="col-lg-2 text-right">
+                
+            </div>
+            <div id="register_spacer" class="col-lg-10">
+                <h3>Login</h3>
+            </div>
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
                 <div class="col-sm-10">
@@ -34,6 +41,7 @@
 
 <script type="text/javascript">
     $(function() {
+        $('#login_form_error').hide();
         $('#login_form').submit(function(event) {
             event.preventDefault();
             var url = $(this).attr('action');
@@ -43,7 +51,11 @@
                 if (o.result === 1) {
                     window.location.href = '<?= site_url('dashboard') ?>';
                 } else {
-                    alert('bad login');
+                    $("#login_form_error").show();
+                    var output = '<ul>';
+                    output += '<li>Your login information was incorrect.</li>';
+                    output += '</ul>';
+                    $("#login_form_error").html(output)
                 }
             }, 'json');
         });
