@@ -8,15 +8,12 @@ var Result = function() {
     //--------------------------------------------------------------------------
 
     this.success = function(msg) {
-        $("#error").addClass('hide');
         var dom = $("#success");
         dom.show();
         if (typeof msg === 'undefined')
         {
-            dom.removeClass("hide");
             dom.html('Success');
         }
-        dom.removeClass("hide");
         dom.html(msg);
 
         setTimeout(function() {
@@ -28,11 +25,10 @@ var Result = function() {
 
 
     this.error = function(msg) {
-        $("#success").addClass('hide');
         var dom = $("#error");
+        dom.show();
         if (typeof msg === 'undefined')
         {
-            dom.removeClass("hide");
             dom.html('Error');
         }
         if (typeof msg === 'object')
@@ -44,10 +40,8 @@ var Result = function() {
             }
             ;
             output += '</ul>';
-            dom.removeClass('hide');
             dom.html(output);
         } else {
-            dom.removeClass("hide");
             dom.html(msg);
         }
 
