@@ -6,6 +6,9 @@ class Api extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+        $this->load->model('user_model');
+        $this->load->model('todo_model');
+        $this->load->model('note_model');
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,7 +26,6 @@ class Api extends CI_Controller {
         $login = $this->input->post('email');
         $pasw = $this->input->post('pasw');
 
-        $this->load->model('user_model');
 
         $result = $this->user_model->get([
             'email' => $login,
@@ -64,8 +66,6 @@ class Api extends CI_Controller {
         $pasw = $this->input->post('pasw');
         //$paswc = $this->input->post('paswc');
 
-        $this->load->model('user_model');
-
         $user_id = $this->user_model->insert([
             'uname' => $uname,
             'password' => hash('sha256', $pasw . SALT),
@@ -88,15 +88,15 @@ class Api extends CI_Controller {
         $this->_require_login();
 
         if ($id != null) {
-            $this->db->where([
+            $result = $this->todo_model->get([
                 'todo_id' => $id,
                 'user_id' => $this->session->userdata('user_id')
             ]);
         } else {
-            $this->db->where('user_id', $this->session->userdata('user_id'));
+            $result = $this->todo_model->get([
+                'user_id' => $this->session->userdata('user_id')
+            ]);
         }
-        $query = $this->db->get('todo');
-        $result = $query->result();
 
         $this->output->set_output(json_encode($result));
     }
@@ -114,18 +114,23 @@ class Api extends CI_Controller {
             ]));
             return false;
         }
+        
+        $content = $this->input->post('content');
 
-        $result = $this->db->insert('todo', [
-            'content' => $this->input->post('content'),
+        $result = $this->todo_model->insert([
+            'content' => $content,
             'user_id' => $this->session->userdata('user_id')
         ]);
 
         if ($result) {
             //get the freshest entry for the DOM
-            $query = $this->db->get_where('todo', ['todo_id' => $this->db->insert_id()]);
             $this->output->set_output(json_encode([
                 'result' => 1,
-                'data' => $query->result()
+                'data' => array(
+                    'todo_id' => $result,
+                    'content' => $content,
+                    'completed' => 0
+                )
             ]));
             return false;
         }
@@ -141,19 +146,25 @@ class Api extends CI_Controller {
     public function update_todo() {
         $this->_require_login();
         $todo_id = $this->input->post('todo_id');
+        $content = $this->input->post('content');
         $completed = $this->input->post('completed');
 
-        $this->db->where(['todo_id' => $todo_id]);
-        $this->db->update('todo', [
+        $result = $this->todo_model->update([
             'completed' => $completed
-        ]);
+                ], $todo_id);
 
-        $result = $this->db->affected_rows();
         if ($result) {
-            $this->output->set_output(json_encode(['result' => 1]));
+            $this->output->set_output(json_encode([
+                'result' => 1,
+                'data' => array(
+                    'todo_id' => $todo_id,
+                    'content' => $content,
+                    'completed' => $completed 
+                )
+                ]));
             return false;
         }
-        
+
         $this->output->set_output(json_encode(['result' => 0]));
         return false;
     }
@@ -163,12 +174,12 @@ class Api extends CI_Controller {
     public function delete_todo() {
         $this->_require_login();
 
-        $result = $this->db->delete('todo', [
+        $result = $this->todo_model->delete([
             'todo_id' => $todo_id = $this->input->post('todo_id'),
             'user_id' => $this->session->userdata('user_id')
         ]);
 
-        if ($this->db->affected_rows() > 0) {
+        if ($result > 0) {
             $this->output->set_output(json_encode(['result' => 1]));
             return false;
         }
@@ -180,14 +191,64 @@ class Api extends CI_Controller {
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    public function get_note() {
+    public function get_note($id = null) {
         $this->_require_login();
+
+        if ($id != null) {
+            $result = $this->note_model->get([
+                'note_id' => $id,
+                'user_id' => $this->session->userdata('user_id')
+            ]);
+        } else {
+            $result = $this->note_model->get([
+                'user_id' => $this->session->userdata('user_id')
+            ]);
+        }
+
+        $this->output->set_output(json_encode($result));
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public function create_note() {
         $this->_require_login();
+
+        $this->form_validation->set_rules('title', 'Title', 'required|max_length[50]');
+        $this->form_validation->set_rules('content', 'Content', 'required|max_length[500]');
+        if ($this->form_validation->run() == false) {
+            $this->output->set_output(json_encode([
+                'result' => 0,
+                'error' => $this->form_validation->error_array()
+            ]));
+            return false;
+        }
+        
+        $title = $this->input->post('title');
+        $content = $this->input->post('content');
+
+        $result = $this->note_model->insert([
+            'title' => $title,
+            'content' => $content,
+            'user_id' => $this->session->userdata('user_id')
+        ]);
+
+        if ($result) {
+            //get the freshest entry for the DOM
+            $this->output->set_output(json_encode([
+                'result' => 1,
+                'data' => array(
+                    'note_id' => $result,
+                    'title' => $title,
+                    'content' => $content
+                )
+            ]));
+            return false;
+        }
+
+        $this->output->set_output(json_encode([
+            'result' => 0,
+            'error' => 'Could not insert record'
+        ]));
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -195,13 +256,48 @@ class Api extends CI_Controller {
     public function update_note() {
         $this->_require_login();
         $note_id = $this->input->post('note_id');
+        $title = $this->input->post('title');
+        $content = $this->input->post('content');
+
+        $result = $this->note_model->update([
+            'title' => $title,
+            'content' => $content
+                ], $note_id);
+
+        if ($result) {
+            $this->output->set_output(json_encode([
+                'result' => 1,
+                'data' => array(
+                    'note_id' => $note_id,
+                    'title' => $title,
+                    'content' => $content
+                )
+                ]));
+            return false;
+        }
+
+        $this->output->set_output(json_encode(['result' => 0]));
+        return false;
     }
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public function delete_note() {
         $this->_require_login();
-        $note_id = $this->input->post('note_id');
+
+        $result = $this->note_model->delete([
+            'note_id' => $todo_id = $this->input->post('note_id'),
+            'user_id' => $this->session->userdata('user_id')
+        ]);
+
+        if ($result > 0) {
+            $this->output->set_output(json_encode(['result' => 1]));
+            return false;
+        }
+        $this->output->set_output(json_encode([
+            'result' => 0,
+            'message' => 'Could not delete.'
+        ]));
     }
 
 }
